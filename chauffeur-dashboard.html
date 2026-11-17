@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-en="Driver dashboard – Codrive">Espace chauffeur – Codrive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="dashboard-page">
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <a href="chauffeur-dashboard.html" class="sidebar-brand">
+        <span class="brand-badge" data-en="D">C</span>
+        <div>
+          <strong>Codrive</strong>
+          <small data-en="Driver dashboard">Espace chauffeur</small>
+        </div>
+      </a>
+
+      <div class="sidebar-caption" data-en="Driver navigation">Pilotage chauffeur</div>
+      <nav class="sidebar-nav" aria-label="Navigation chauffeur" data-en-aria-label="Driver navigation">
+        <a href="#overview" data-icon="⌂" data-en="Overview">Vue d’ensemble</a>
+        <a href="#publish" data-icon="➕" data-en="Publish a trip">Proposer un trajet</a>
+        <a href="#myVehicles" data-icon="🚘" data-en="My vehicles">Mes véhicules</a>
+        <a href="#myTrips" data-icon="🛣" data-en="My trips">Mes trajets</a>
+        <a href="#driverReviews" data-icon="⭐" data-en="My reviews">Mes évaluations</a>
+        <a href="#tripReservations" data-icon="📥" data-en="Incoming bookings">Réservations reçues</a>
+        <a href="#notifications" data-icon="🔔">Notifications</a>
+      </nav>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-user">
+        <span class="section-tag">Session</span>
+        <div id="currentUserBadge" class="user-badge-card"><span data-en="No user signed in">Aucun utilisateur</span></div>
+        <button id="logoutBtn" class="btn btn-secondary btn-block"><span class="material-icons">logout</span><span data-en="Sign out">Déconnexion</span></button>
+      </div>
+    </aside>
+
+    <main class="dashboard-main">
+      <header class="topbar">
+        <div>
+          <h1 data-en="Driver dashboard">Espace chauffeur</h1>
+        </div>
+        <div id="apiStatus" class="api-status" role="status"><span data-en="Checking your session…">Vérification de la session…</span></div>
+      </header>
+
+      <section id="overview" class="dashboard-section">
+        <div class="overview-grid">
+          <article class="overview-card">
+            <span class="overview-label" data-en="My trips">Mes trajets</span>
+            <strong id="statMyTrips">0</strong>
+          </article>
+          <article class="overview-card">
+            <span class="overview-label" data-en="Incoming bookings">Réservations reçues</span>
+            <strong id="statDriverReservations">0</strong>
+          </article>
+          <article class="overview-card">
+            <span class="overview-label" data-en="Average rating">Note moyenne</span>
+            <strong id="statDriverRating">0.0 / 5</strong>
+          </article>
+        </div>
+      </section>
+
+      <section id="publish" class="dashboard-section">
+        <div class="section-head">
+          <div>
+            <span class="section-tag" data-en="Publish">Publication</span>
+            <h2 data-en="Publish a new trip">Proposer un nouveau trajet</h2>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <p class="helper-text" data-en="Select an existing vehicle or enter its details when creating the trip.">Sélectionne un véhicule existant ou complète les champs pour en préciser un lors de la création du trajet.</p>
+          <form id="createTripForm" class="stack-form form-grid trip-create-grid">
+            <div class="field">
+              <label for="villeDepart" data-en="Departure city">Ville de départ</label>
+              <input type="text" id="villeDepart" placeholder="Ex. Tunis" data-en-placeholder="e.g. Tunis" required />
+            </div>
+            <div class="field">
+              <label for="villeArrivee" data-en="Arrival city">Ville d’arrivée</label>
+              <input type="text" id="villeArrivee" placeholder="Ex. Sfax" data-en-placeholder="e.g. Sfax" required />
+            </div>
+            <div class="field">
+              <label for="dateTrajet" data-en="Date and time">Date et heure</label>
+              <input type="datetime-local" id="dateTrajet" required />
+            </div>
+            <div class="field">
+              <label for="prixPlace" data-en="Price per seat">Prix par place</label>
+              <input type="number" id="prixPlace" min="0.1" step="any" value="20" required />
+            </div>
+            <div class="field">
+              <label for="nbPlacesTotal" data-en="Number of seats">Nombre de places</label>
+              <input type="number" id="nbPlacesTotal" min="1" value="3" required />
+            </div>
+            <div class="field">
+              <label for="selectedVehicule" data-en="Vehicle">Véhicule</label>
+              <select id="selectedVehicule">
+                <option value="" data-en="Choose an existing vehicle">Choisir un véhicule déjà enregistré</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="tripVehiculeMarque" data-en="Vehicle make">Marque du véhicule</label>
+              <input type="text" id="tripVehiculeMarque" placeholder="Ex. Peugeot" data-en-placeholder="e.g. Peugeot" />
+            </div>
+            <div class="field">
+              <label for="tripVehiculeModele" data-en="Vehicle model">Modèle du véhicule</label>
+              <input type="text" id="tripVehiculeModele" placeholder="Ex. 208" data-en-placeholder="e.g. 208" />
+            </div>
+            <div class="field">
+              <label for="tripVehiculeImmatriculation" data-en="Registration plate">Immatriculation</label>
+              <input type="text" id="tripVehiculeImmatriculation" placeholder="123-TUN-456" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block form-grid-submit"><span class="material-icons">add_road</span><span data-en="Publish trip">Publier le trajet</span></button>
+          </form>
+        </div>
+      </section>
+
+      <section id="myVehicles" class="dashboard-section">
+        <div class="section-head">
+          <div>
+            <span class="section-tag" data-en="Vehicles">Véhicules</span>
+            <h2 data-en="My vehicles">Mes véhicules</h2>
+          </div>
+          <button id="loadVehiclesBtn" class="btn btn-secondary"><span class="material-icons">refresh</span><span data-en="Refresh">Actualiser</span></button>
+        </div>
+
+        <div class="dashboard-card dashboard-card-soft">
+          <form id="createVehicleForm" class="stack-form form-grid trip-create-grid">
+            <div class="field">
+              <label for="vehiculeMarque" data-en="Make">Marque</label>
+              <input type="text" id="vehiculeMarque" placeholder="Ex. Peugeot" data-en-placeholder="e.g. Peugeot" required />
+            </div>
+            <div class="field">
+              <label for="vehiculeModele" data-en="Model">Modèle</label>
+              <input type="text" id="vehiculeModele" placeholder="Ex. 208" data-en-placeholder="e.g. 208" required />
+            </div>
+            <div class="field">
+              <label for="vehiculeImmatriculation" data-en="Registration plate">Immatriculation</label>
+              <input type="text" id="vehiculeImmatriculation" placeholder="123-TUN-456" required />
+            </div>
+            <div class="field">
+              <label for="vehiculeNbPlaces" data-en="Number of seats">Nombre de places</label>
+              <input type="number" id="vehiculeNbPlaces" min="1" value="4" required />
+            </div>
+            <button type="submit" class="btn btn-primary btn-block form-grid-submit"><span class="material-icons">directions_car</span><span data-en="Add vehicle">Ajouter le véhicule</span></button>
+          </form>
+        </div>
+
+        <div id="vehiclesGrid" class="users-grid"></div>
+
+        <div id="emptyVehicles" class="empty-state hidden">
+          <div class="empty-icon">🛞</div>
+          <h3 data-en="No vehicles">Aucun véhicule</h3>
+          <p data-en="Add your first vehicle to use it when publishing a trip.">Ajoute ton premier véhicule pour le réutiliser lors de la création d’un trajet.</p>
+        </div>
+      </section>
+
+      <section id="myTrips" class="dashboard-section">
+        <div class="section-head">
+          <div>
+            <span class="section-tag" data-en="Trips">Trajets</span>
+            <h2 data-en="My published trips">Mes trajets publiés</h2>
+          </div>
+          <button id="refreshMyTripsBtn" class="btn btn-secondary"><span class="material-icons">refresh</span><span data-en="Refresh">Actualiser</span></button>
+        </div>
+
+        <div id="myTripsGrid" class="trip-grid"></div>
+
+        <div id="emptyMyTrips" class="empty-state hidden">
+          <div class="empty-icon">🚗</div>
+          <h3 data-en="No published trips">Aucun trajet publié</h3>
+          <p data-en="Publish your first trip to get started.">Publie ton premier trajet pour commencer.</p>
+        </div>
+      </section>
+
+      <section id="driverReviews" class="dashboard-section">
+        <div class="section-head">
+          <div>
+            <span class="section-tag" data-en="Reviews">Avis</span>
+            <h2 data-en="My ratings and reviews">Mes évaluations et commentaires</h2>
+          </div>
+          <button id="loadDriverReviewsBtn" class="btn btn-secondary"><span class="material-icons">refresh</span><span data-en="Refresh">Actualiser</span></button>
+        </div>
+
+        <div class="dashboard-card">
+          <div id="driverReviewsSummary" class="helper-text"><span data-en="No reviews loaded.">Aucune évaluation chargée.</span></div>
+          <ul id="driverReviewsList" class="notification-list list-spaced">
+            <li class="notification-item muted" data-en="No reviews yet.">Aucun avis pour le moment.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="tripReservations" class="dashboard-section">
+        <div class="section-head">
+          <div>
+            <span class="section-tag" data-en="Bookings">Réservations</span>
+            <h2 data-en="Incoming bookings for my trips">Réservations reçues sur mes trajets</h2>
+          </div>
+          <button id="loadDriverReservationsBtn" class="btn btn-secondary"><span class="material-icons">refresh</span><span data-en="Refresh">Actualiser</span></button>
+        </div>
+
+        <div id="driverReservationsGrid" class="trip-grid"></div>
+
+        <div id="emptyDriverReservations" class="empty-state hidden">
+          <div class="empty-icon">📥</div>
+          <h3 data-en="No incoming bookings">Aucune réservation reçue</h3>
+          <p data-en="Passenger requests will appear here.">Les demandes des passagers apparaîtront ici.</p>
+        </div>
+      </section>
+
+      <section id="notifications" class="dashboard-section">
+        <div class="section-head">
+          <div>
+            <span class="section-tag">Notifications</span>
+            <h2 data-en="My notifications">Mes notifications</h2>
+          </div>
+          <button id="loadNotificationsBtn" class="btn btn-secondary"><span class="material-icons">notifications</span><span data-en="Load">Charger</span></button>
+        </div>
+
+        <div class="dashboard-card">
+          <ul id="notificationsList" class="notification-list">
+            <li class="notification-item muted" data-en="No notifications loaded.">Aucune notification chargée.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="config.js"></script>
+  <script src="js/language.js"></script>
+  <script src="js/api-messages.js"></script>
+  <script src="js/auth-common.js"></script>
+  <script src="js/dashboard-common.js"></script>
+  <script src="js/chauffeur-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title data-en="Passenger dashboard – Codrive">Espace passager – Codrive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body class="dashboard-page">
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <a href="passager-dashboard.html" class="sidebar-brand">
+        <span class="brand-badge">P</span>
+        <div>
+          <strong>Codrive</strong>
+          <small data-en="Passenger dashboard">Espace passager</small>
+        </div>
+      </a>
+
+      <div class="sidebar-caption">Navigation</div>
+      <nav class="sidebar-nav" aria-label="Navigation passager" data-en-aria-label="Passenger navigation">
+        <a href="#overview" data-icon="⌂" data-en="Overview">Vue d’ensemble</a>
+        <a href="#trajets" data-icon="🧭" data-en="Search">Rechercher</a>
+        <a href="#reservation" data-icon="📝" data-en="Book a trip">Réserver</a>
+        <a href="#myReservations" data-icon="🧾" data-en="My bookings">Mes réservations</a>
+        <a href="#notifications" data-icon="🔔">Notifications</a>
+      </nav>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-user">
+        <span class="section-tag">Session</span>
+        <div id="currentUserBadge" class="user-badge-card"><span data-en="No user signed in">Aucun utilisateur</span></div>
+        <button id="logoutBtn" class="btn btn-secondary btn-block"><span class="material-icons">logout</span><span data-en="Sign out">Déconnexion</span></button>
+      </div>
+    </aside>
+
+    <main class="dashboard-main">
+      <header class="topbar">
+        <div>
+          <h1 data-en="Passenger dashboard">Espace passager</h1>
+        </div>
+        <div id="apiStatus" class="api-status" role="status"><span data-en="Checking your session…">Vérification de la session…</span></div>
+      </header>
+
+      <section id="overview" class="dashboard-section">
+        <div class="overview-grid">
+          <article class="overview-card">
+            <span class="overview-label" data-en="Trips found">Trajets affichés</span>
+            <strong id="statTrips">0</strong>
+          </article>
+          <article class="overview-card">
+            <span class="overview-label" data-en="My bookings">Mes réservations</span>
+            <strong id="statReservations">0</strong>
+          </article>
+        </div>
+      </section>
+
+      <section id="trajets" class="dashboard-section">
+        <div class="section-head">
+          <div>
+            <span class="section-tag" data-en="Search">Recherche</span>
+            <h2 data-en="Available trips">Trajets disponibles</h2>
+          </div>
+          <button id="refreshTripsBtn" class="btn btn-secondary"><span class="material-icons">refresh</span><span data-en="Refresh">Actualiser</span></button>
+        </div>
+
+        <form id="searchForm" class="search-panel">
+          <div class="field">
+            <label for="depart" data-en="Departure city">Ville de départ</label>
+            <input type="text" id="depart" placeholder="Ex. Sfax" data-en-placeholder="e.g. Sfax"/>
+          </div>
+          <div class="field">
+            <label for="arrivee" data-en="Arrival city">Ville d’arrivée</label>
+            <input type="text" id="arrivee" placeholder="Ex. Tunis" data-en-placeholder="e.g. Tunis"/>
+          </div>
+          <div class="field">
+            <label for="dateDepart">Date</label>
+            <input type="date" id="dateDepart"/>
+          </div>
+          <div class="field">
+            <label for="placesMin" data-en="Minimum seats">Places min.</label>
+            <input type="number" id="placesMin" min="1" value="1"/>
+          </div>
+          <div class="search-actions">
+            <button type="submit" class="btn btn-primary"><span class="material-icons">search</span><span data-en="Search">Rechercher</span></button>
+            <button type="button" id="resetSearchBtn" class="btn btn-secondary"><span class="material-icons">restart_alt</span><span data-en="Reset">Réinitialiser</span></button>
+          </div>
+        </form>
+
+        <div class="toolbar">
+          <div id="resultsInfo" class="results-info" role="status"><span data-en="0 results">0 résultat</span></div>
+        </div>
+
+        <div id="tripsGrid" class="trip-grid"></div>
+
+        <div id="emptyState" class="empty-state hidden">
+          <div class="empty-icon">⛅</div>
+          <h3 data-en="No trips found">Aucun trajet trouvé</h3>
+          <p data-en="Try broadening your search or refreshing the list.">Essaie d’élargir la recherche ou d’actualiser la liste.</p>
+        </div>
+      </section>
+
+      <section id="reservation" class="dashboard-section">
+        <div class="section-head">
+          <div>
+            <span class="section-tag" data-en="Booking">Réservation</span>
+            <h2 data-en="Book a trip">Réserver un trajet</h2>
+          </div>
+        </div>
+
+        <div class="dashboard-card">
+          <form id="reservationForm" class="stack-form reservation-form">
+            <div class="field">
+              <label for="selectedTrip" data-en="Selected trip">Trajet sélectionné</label>
+              <input type="text" id="selectedTrip" placeholder="Choisir un trajet depuis la liste" data-en-placeholder="Select a trip from the list" readonly/>
+            </div>
+            <div class="field">
+              <label for="passagerNom" data-en="Passenger name">Nom du passager</label>
+              <input type="text" id="passagerNom" readonly/>
+            </div>
+            <div class="field">
+              <label for="passagerEmail">Email</label>
+              <input type="email" id="passagerEmail" readonly/>
+            </div>
+            <div class="field">
+              <label for="nbPlaces" data-en="Number of seats">Nombre de places</label>
+              <input type="number" id="nbPlaces" min="1" value="1" aria-describedby="reservationSummary" required disabled/>
+            </div>
+            <div class="field">
+              <label for="paymentType" data-en="Payment method">Moyen de paiement</label>
+              <select id="paymentType" disabled>
+                <option value="CARTE" data-en="Card">Carte</option>
+                <option value="PAYPAL">PayPal</option>
+                <option value="ESPECES" data-en="Cash">Espèces</option>
+              </select>
+            </div>
+            <p id="reservationSummary" class="reservation-summary form-grid-submit" role="status"><span data-en="Select a trip to see the total.">Choisis un trajet pour connaître le total.</span></p>
+            <button id="reservationSubmitBtn" type="submit" class="btn btn-primary btn-block form-grid-submit" disabled><span class="material-icons" aria-hidden="true">event_available</span><span data-en="Confirm booking">Confirmer la réservation</span></button>
+          </form>
+        </div>
+      </section>
+
+      <section id="myReservations" class="dashboard-section">
+        <div class="section-head">
+          <div>
+            <span class="section-tag" data-en="Booking history">Suivi</span>
+            <h2 data-en="My bookings">Mes réservations</h2>
+          </div>
+          <button id="loadReservationsBtn" class="btn btn-secondary"><span class="material-icons">refresh</span><span data-en="Refresh">Actualiser</span></button>
+        </div>
+
+        <div id="reservationsGrid" class="trip-grid"></div>
+
+        <div id="emptyReservations" class="empty-state hidden">
+          <div class="empty-icon">🧾</div>
+          <h3 data-en="No bookings">Aucune réservation</h3>
+          <p data-en="Your booking history will appear here.">Ton historique de réservation apparaîtra ici.</p>
+        </div>
+      </section>
+
+      <section id="notifications" class="dashboard-section">
+        <div class="section-head">
+          <div>
+            <span class="section-tag">Notifications</span>
+            <h2 data-en="My notifications">Mes notifications</h2>
+          </div>
+          <button id="loadNotificationsBtn" class="btn btn-secondary"><span class="material-icons">notifications</span><span data-en="Load">Charger</span></button>
+        </div>
+
+        <div class="dashboard-card">
+          <ul id="notificationsList" class="notification-list">
+            <li class="notification-item muted" data-en="No notifications loaded.">Aucune notification chargée.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="config.js"></script>
+  <script src="js/language.js"></script>
+  <script src="js/api-messages.js"></script>
+  <script src="js/auth-common.js"></script>
+  <script src="js/dashboard-common.js"></script>
+  <script src="js/passager-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title data-en="Sign in – Codrive">Connexion – Codrive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="auth-page">
+  <main class="auth-shell">
+    <section class="auth-brand">
+      <strong class="auth-brand-title">Codrive</strong>
+      <p data-en="Find a trip or offer spare seats in your car.">Trouve un trajet ou propose les places libres de ta voiture.</p>
+      <img
+        src="images/carpool-login.png"
+        alt="Voiture sur une route" data-en-alt="Car on a road"
+        class="auth-hero-image"
+      />
+    </section>
+
+    <section class="auth-panel">
+      <div class="auth-card">
+        <div class="auth-card-head">
+          <h1 data-en="Sign in to Codrive">Connexion à Codrive</h1>
+        </div>
+
+        <form id="loginForm" class="stack-form">
+          <div class="field">
+            <label for="loginEmail">Email</label>
+            <input type="email" id="loginEmail" autocomplete="username" placeholder="exemple@mail.com" data-en-placeholder="example@mail.com" maxlength="255" required />
+          </div>
+
+          <div class="field">
+            <label for="loginPassword" data-en="Password">Mot de passe</label>
+            <input type="password" id="loginPassword" autocomplete="current-password" maxlength="255" required />
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block"><span class="material-icons" aria-hidden="true">login</span><span data-en="Sign in">Se connecter</span></button>
+          <p id="authFeedback" class="form-feedback" role="alert"></p>
+        </form>
+
+        <div class="auth-links">
+          <span data-en="New to Codrive?">Pas encore inscrit ?</span>
+          <a href="register.html" data-en="Create an account">Créer un compte</a>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="js/language.js"></script>
+  <script src="js/api-messages.js"></script>
+  <script src="js/auth-common.js"></script>
+  <script src="js/login.js"></script>
+</body>
+</html>

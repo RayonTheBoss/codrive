@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title data-en="Admin dashboard – Codrive">Espace administrateur – Codrive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body class="dashboard-page">
+  <div class="dashboard-layout">
+    <aside class="sidebar">
+      <a href="admin-dashboard.html" class="sidebar-brand">
+        <span class="brand-badge">A</span>
+        <div>
+          <strong>Codrive</strong>
+          <small data-en="Admin dashboard">Espace admin</small>
+        </div>
+      </a>
+
+      <div class="sidebar-caption">Administration</div>
+      <nav class="sidebar-nav" aria-label="Navigation administrateur" data-en-aria-label="Admin navigation">
+        <a href="#overview" data-icon="⌂" data-en="Overview">Vue générale</a>
+        <a href="#users" data-icon="👥" data-en="Users">Utilisateurs</a>
+        <a href="#allTrips" data-icon="🗺" data-en="Trips">Trajets</a>
+        <a href="#notifications" data-icon="🔔">Notifications</a>
+      </nav>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-user">
+        <span class="section-tag">Session</span>
+        <div id="currentUserBadge" class="user-badge-card"><span data-en="No user signed in">Aucun utilisateur</span></div>
+        <button id="logoutBtn" class="btn btn-secondary btn-block"><span class="material-icons">logout</span><span data-en="Sign out">Déconnexion</span></button>
+      </div>
+    </aside>
+
+    <main class="dashboard-main">
+      <header class="topbar">
+        <div>
+          <h1 data-en="Admin dashboard">Espace administrateur</h1>
+        </div>
+        <div id="apiStatus" class="api-status" role="status"><span data-en="Checking your session…">Vérification de la session…</span></div>
+      </header>
+
+      <section id="overview" class="dashboard-section">
+        <div class="overview-grid">
+          <article class="overview-card">
+            <span class="overview-label" data-en="Users">Utilisateurs</span>
+            <strong id="statUsers">0</strong>
+          </article>
+          <article class="overview-card">
+            <span class="overview-label" data-en="Trips">Trajets</span>
+            <strong id="statTrips">0</strong>
+          </article>
+        </div>
+      </section>
+
+      <section id="users" class="dashboard-section">
+        <div class="section-head">
+          <div>
+            <span class="section-tag">Admin</span>
+            <h2 data-en="Users">Liste des utilisateurs</h2>
+          </div>
+          <button id="loadUsersBtn" class="btn btn-secondary"><span class="material-icons">refresh</span><span data-en="Refresh">Actualiser</span></button>
+        </div>
+
+        <div class="dashboard-card">
+          <div id="usersGrid" class="users-grid"></div>
+          <div id="emptyUsers" class="empty-state hidden">
+            <div class="empty-icon">👥</div>
+            <h3 data-en="No users found">Aucun utilisateur trouvé</h3>
+            <p data-en="Check that the API returns the account list.">Vérifie que l’API retourne bien la liste des comptes.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="allTrips" class="dashboard-section">
+        <div class="section-head">
+          <div>
+            <span class="section-tag" data-en="Trip management">Supervision</span>
+            <h2 data-en="All trips">Tous les trajets</h2>
+          </div>
+          <button id="loadTripsBtn" class="btn btn-secondary"><span class="material-icons">refresh</span><span data-en="Refresh">Actualiser</span></button>
+        </div>
+
+        <div id="adminTripsGrid" class="trip-grid"></div>
+
+        <div id="emptyAdminTrips" class="empty-state hidden">
+          <div class="empty-icon">🗺️</div>
+          <h3 data-en="No trips found">Aucun trajet trouvé</h3>
+          <p data-en="Trips will appear here.">La supervision des trajets apparaîtra ici.</p>
+        </div>
+      </section>
+
+      <section id="notifications" class="dashboard-section">
+        <div class="section-head">
+          <div>
+            <span class="section-tag">Notifications</span>
+            <h2 data-en="My notifications">Mes notifications</h2>
+          </div>
+          <button id="loadNotificationsBtn" class="btn btn-secondary"><span class="material-icons">notifications</span><span data-en="Load">Charger</span></button>
+        </div>
+
+        <div class="dashboard-card">
+          <ul id="notificationsList" class="notification-list">
+            <li class="notification-item muted" data-en="No notifications loaded.">Aucune notification chargée.</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="config.js"></script>
+  <script src="js/language.js"></script>
+  <script src="js/api-messages.js"></script>
+  <script src="js/auth-common.js"></script>
+  <script src="js/dashboard-common.js"></script>
+  <script src="js/admin-dashboard.js"></script>
+</body>
+</html>
