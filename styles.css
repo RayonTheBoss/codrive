@@ -656,7 +656,6 @@ button .material-icons {
 }
 
 
-/* --- UI enhancement pack --- */
 .sidebar::before {
   content: "";
   position: absolute;

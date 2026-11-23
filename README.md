@@ -12,10 +12,10 @@ Use the menu in the top-right corner to switch between French and English. To op
 2. In a separate tab, sign in as the driver and accept the reservation.
 3. Return to the passenger dashboard and check the updated status. Use the admin dashboard to manage accounts and trips.
 
-## Walk through the implementation
+## Architecture
 
-- **Authentication.** Trace sign-in from the login form to `AuthService`, then follow a protected request through `RequestAuthHelper`. The browser sends an opaque bearer token. The server looks up the associated account, checks its current status, and enforces the role required by the endpoint. Passwords are hashed with salted PBKDF2. Signing out revokes the token.
-- **Booking.** Walk through two passengers trying to reserve the final seat. A database lock on the trip serializes the competing requests. The second request sees the committed seat count before deciding whether it can book. The transaction also groups the reservation, simulated payment, and notifications, so they commit together.
+- **Authentication.** `AuthService` verifies credentials at sign-in. Protected endpoints use `RequestAuthHelper` to validate the browser's bearer token, check the account's current status, and enforce the required role. Passwords are hashed with salted PBKDF2. Signing out revokes the token.
+- **Booking.** A database lock on each trip serializes competing booking requests. When two passengers request the final seat, the second request checks availability after the first transaction commits. Reservation, simulated payment, and notification changes are grouped in one transaction.
 - **Frontend.** The shared JavaScript handles authenticated requests and common dashboard behavior. Each role still has its own HTML page and actions. The dashboard uses eligibility flags from the API to decide which reservation buttons to show.
 
 Sessions expire after eight hours by default and live in memory on one API instance, so an API restart signs users out. H2 persists accounts, trips, reservations, and other domain data across restarts. Payment actions and notification channels are simulated in the app.
